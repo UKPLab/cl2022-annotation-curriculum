@@ -21,13 +21,8 @@ For license information, please see the LICENSE and README files.
 
 ## Project structure
 
-* `active_learning` &mdash; Our active learning strategies
-* `data` &mdash; Folder to put the data
-* `learner_models` &mdash; Our simulated learner models
-* `models` &mdash; Folder for storing our trained deep learning models
-* `readers` &mdash; Datareader
-* `results` &mdash; Result folder
-* `user_simulation` &mdash; Code the handing simulated learner models 
+* `experiments` &mdash; Code for running our experiments from section 4 (_Evaluation with Existing Datasets_)
+* `user_study` &mdash; Code for running the user study from section 5 (_Human Evaluation_)
 
 ## Setting up the experiments
 
@@ -36,25 +31,10 @@ pip install -r requirements.txt
 ```
 ## Running the experiments
 
-```python
-python train_model.py
-```
-### Parameters
-The code offers a range of parameters which can be set:
-
-`--train` &mdash; Path to the (initially unlabeled) training data.
-
-`--test` &mdash; Path to the test data.
-
-`--seed` &mdash; Random seed to use.
-
-`--epochs` &mdash; Number of epochs.
-
+Please refer to the respective README.md files in the subfolders.
 
 ## Data
 The collected data from our study is provided on tu-datalib under a CC-by 4.0 license. 
-
-To reproduce our experiments, please collect the 
 
 
 ## Citing the paper
