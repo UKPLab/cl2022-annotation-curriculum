@@ -34,7 +34,7 @@ pip install -r requirements.txt
 Please refer to the respective README.md files in the subfolders.
 
 ## Data
-The collected data from our study is provided on tu-datalib under a CC-by 4.0 license. 
+The collected data from our study is provided on [tu-datalib](https://tudatalib.ulb.tu-darmstadt.de/handle/tudatalib/2783) under a CC-by 4.0 license. 
 
 
 ## Citing the paper
