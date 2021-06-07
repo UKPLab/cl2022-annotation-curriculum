@@ -1,34 +1,23 @@
 import json
 import logging
-import re
 import xml.etree.ElementTree as ET
-from collections import Counter
-from datetime import datetime
 from enum import Enum, auto
-from statistics import mean, median
 from typing import List, Tuple
 
 import attr
 import pandas as pd
-import preprocessor
 from cleantext import clean
 from sklearn.model_selection import train_test_split
 
-from ca.ext import CaDocumentClassificationAccessor, CaTaggingAccessor
 from ca.paths import *
 
 
 class Dataset(Enum):
-    CONVINCING = auto()
     SPEC = auto()
     SIGIE = auto()
     MUC7T = auto()
     MUC7T_A = auto()
     MUC7T_B = auto()
-    FAMULUS_EDA_MED = auto()
-    CASG = auto()
-    CASG_A = auto()
-    CASG_C = auto()
 
 
 class Task(Enum):
@@ -55,57 +44,6 @@ class Corpus:
 
 def my_clean(s: str) -> str:
     return clean(s, no_urls=True, lower=False, no_line_breaks=True)
-
-
-def load_famulus_eda_med() -> Corpus:
-    def _convert(p: Path) -> pd.DataFrame:
-        sentence_ids = []
-        token_ids = []
-        words = []
-        labels = []
-        t = []
-
-        with p.open() as f:
-            s = f.read().strip()
-            chunks = re.split(r"\n\s*\n", s)
-
-            for sentence_id, chunk in enumerate(chunks):
-                chunk = chunk.strip("\n\t \uFEFF")
-                if not chunk:
-                    continue
-
-                lines = chunk.split("\n")
-                for token_id, line in enumerate(lines):
-
-                    word, l1, l2, l3, l4, l5, docid, annotator, t1, t2, t3 = line.strip().split("\t")
-
-                    sentence_ids.append(docid)
-                    token_ids.append(token_id)
-                    words.append(word)
-                    labels.append(l5)
-                    t.append(t3)
-
-        data = {
-            "document_id": sentence_ids,
-            "sentence_id": sentence_ids,
-            "token_id": token_ids,
-            "word": words,
-            "label": labels,
-            "t": t,
-        }
-
-        df = pd.DataFrame(data, columns=["document_id", "sentence_id", "token_id", "word", "label", "t"])
-        return df
-
-    df_train = _convert(PATH_DATA_FAMULUS_EDA_MED_TRAIN)
-    df_dev = _convert(PATH_DATA_FAMULUS_EDA_MED_DEV)
-    df_test = _convert(PATH_DATA_FAMULUS_EDA_MED_TEST)
-
-    tags = list(sorted(set(df_train["label"]) | set(df_dev["label"]) | set(df_test["label"])))
-
-    df_all = pd.concat([df_train, df_dev, df_test])
-
-    return Corpus(df_all, df_train, df_dev, df_test, tags, "famulus-eda-med", True, Task.SEQUENCE_TAGGING)
 
 
 def load_spec() -> pd.DataFrame:
@@ -179,15 +117,6 @@ def load_sig_ie() -> Corpus:
 
     X_train, X_test = train_test_split_sequence_tagging(df)
     return Corpus(df, X_train, None, X_test, tags, "SigIE", True, Task.SEQUENCE_TAGGING)
-
-
-def load_convincing() -> Corpus:
-    df = pd.read_csv(r"D:\git\curriculum-annotation\data\processed\convincing_A3QGFLKL2G6NJJ.csv")
-
-    tags = list(sorted(set(df["label"])))
-
-    X_train, X_test = train_test_split(df, test_size=0.2, random_state=42)
-    return Corpus(df, X_train, None, X_test, tags, "Convincing", True, Task.PAIRWISE_CLASSIFICATION)
 
 
 def load_muc7t_a():
@@ -271,57 +200,18 @@ def _load_muc7t_single(path: Path) -> Corpus:
     return Corpus(df, X_train, X_dev, X_test, tags, "muc7t", True, Task.SEQUENCE_TAGGING)
 
 
-def load_casg() -> Corpus:
-    df = pd.read_csv(PATH_DATA_CASG)
-    tags = list(sorted(set(df["label"])))
-
-    df["sentence"] = df["sentence"].apply(preprocessor.clean)
-
-    X_train, X_test = train_test_split(df, test_size=0.2, random_state=42)
-    return Corpus(df, X_train, None, X_test, tags, "CASG", True, Task.DOCUMENT_CLASSIFICATION)
-
-
-def load_casg_a() -> Corpus:
-    df = load_casg().all
-    df = df[df["annotator"] == "a"]
-
-    tags = list(sorted(set(df["label"])))
-
-    X_train, X_test = train_test_split(df, test_size=0.2, random_state=42)
-    return Corpus(df, X_train, None, X_test, tags, "CASG_A", True, Task.DOCUMENT_CLASSIFICATION)
-
-
-def load_casg_c() -> Corpus:
-    df = load_casg().all
-    df = df[df["annotator"] == "c"]
-    tags = list(sorted(set(df["label"])))
-
-    X_train, X_test = train_test_split(df, test_size=0.2, random_state=42)
-    return Corpus(df, X_train, None, X_test, tags, "CASG_C", True, Task.DOCUMENT_CLASSIFICATION)
-
-
 def load_corpus(corpus: Dataset) -> Corpus:
     logging.info("Loading [%s]", corpus.name)
     if corpus == Dataset.SPEC:
         return load_spec_corpus()
     elif corpus == Dataset.SIGIE:
         return load_sig_ie()
-    elif corpus == Dataset.CONVINCING:
-        return load_convincing()
     elif corpus == Dataset.MUC7T:
         return load_muc7t_a()
     elif corpus == Dataset.MUC7T_A:
         return load_muc7t_a()
     elif corpus == Dataset.MUC7T_B:
         return load_muc7t_b()
-    elif corpus == Dataset.FAMULUS_EDA_MED:
-        return load_famulus_eda_med()
-    elif corpus == Dataset.CASG:
-        return load_casg()
-    elif corpus == Dataset.CASG_A:
-        return load_casg_a()
-    elif corpus == Dataset.CASG_C:
-        return load_casg_c()
     else:
         raise RuntimeError(f"Invalid dataset name: [{corpus.name}]")
 

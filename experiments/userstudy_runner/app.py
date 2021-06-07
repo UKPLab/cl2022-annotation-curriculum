@@ -1,25 +1,23 @@
-from collections import defaultdict
 import logging
 import os
 import tempfile
 import threading
+from collections import defaultdict
 from http import HTTPStatus
+from multiprocessing import shared_memory
 from pathlib import Path
 from typing import Any, List, Optional
-from multiprocessing import shared_memory
 
 import joblib
 import numpy as np
 from diskcache import Cache
 from filelock import FileLock, Timeout
 from flask import Flask, jsonify, request
+from scipy.stats import rankdata
 from sentence_transformers import SentenceTransformer
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import DotProduct, WhiteKernel
 from sklearn.linear_model import Ridge
-
-from scipy.stats import rankdata
-
 
 logging.config.fileConfig("logging.conf")
 
@@ -80,9 +78,7 @@ class Server:
             def _fn():
                 try:
                     Xf = self._featurizer.featurize(texts)
-                    model = (
-                        GaussianProcessRegressor(kernel=(DotProduct() + WhiteKernel())).fit(Xf, times)
-                    )
+                    model = GaussianProcessRegressor(kernel=(DotProduct() + WhiteKernel())).fit(Xf, times)
                     self._save_model(user_id, model)
                 finally:
                     lock.release()

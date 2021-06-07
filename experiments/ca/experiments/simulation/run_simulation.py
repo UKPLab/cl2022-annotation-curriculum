@@ -21,6 +21,7 @@ from ca.experiments.simulation.simulation_util import (ModelType,
                                                        SimulationResult,
                                                        get_model,
                                                        save_simulation_results)
+from ca.ext import *
 from ca.featurizer import CachedSentenceTransformer, CrfFeaturizer
 from ca.strategies import StrategyType, get_strategy
 from ca.util import DISABLE_TQDM, setup_logging

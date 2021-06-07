@@ -2,7 +2,6 @@
 
 Usage:
   curriculum_annotation.py simulation [--debug_limit=<debug_limit>]
-  curriculum_annotation.py simulation_chunked [--debug_limit=<debug_limit>]
   curriculum_annotation.py simulation_jobarray [--debug_limit=<debug_limit>]
   curriculum_annotation.py (-h | --help)
   curriculum_annotation.py --version
@@ -20,7 +19,6 @@ from docopt import docopt
 
 import ca.util
 from ca.datasets import Dataset
-from ca.experiments.simulation.run_chunked_simulation import simulate_chunked
 from ca.experiments.simulation.run_simulation import simulate
 from ca.experiments.simulation.simulation_util import (ModelType,
                                                        RegressorType,
@@ -83,19 +81,7 @@ if __name__ == '__main__':
             i += 1
 
         save_simulation_results(results)
-    elif arguments["simulation_chunked"]:
-        results = []
 
-        i = 1
-        for dataset_name, model_type, strategy, regressor in experiments:
-            logging.info("Simulating [%s] using [%s] with [%s]", dataset_name, model_type, strategy)
-            result = simulate_chunked(model_type, dataset_name, strategy, debug, debug_limit)
-            results.append(result)
-            logging.info("Finished [%d / %d]", i, len(experiments))
-
-            i += 1
-
-        save_simulation_results(results)
     elif arguments["simulation_jobarray"]:
         experiments = experiments_spec + experiments_sigie + experiments_muc
 

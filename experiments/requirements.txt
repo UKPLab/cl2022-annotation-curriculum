@@ -25,6 +25,9 @@ docopt
 preprocessor
 flask
 joblib
-[-e] git+https://github.com/awslabs/mlm-scoring.git
+git+https://github.com/awslabs/mlm-scoring.git
 transformers~=3.3.1
 slurmee
+wget
+seaborn
+mxnet

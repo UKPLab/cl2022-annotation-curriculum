@@ -20,6 +20,7 @@ from sklearn.preprocessing import RobustScaler
 from tqdm import tqdm
 
 from ca.datasets import Dataset, Task, load_corpus
+from ca.ext import *
 from ca.featurizer import CachedSentenceTransformer
 
 
@@ -149,7 +150,14 @@ def annotation_time_prediction():
     ]
 
     for model in models:
-        for ds in tqdm([Dataset.MUC7T_A, Dataset.SIGIE, Dataset.SPEC, ], leave=False):
+        for ds in tqdm(
+            [
+                Dataset.MUC7T_A,
+                Dataset.SIGIE,
+                Dataset.SPEC,
+            ],
+            leave=False,
+        ):
 
             corpus = load_corpus(ds)
 
@@ -171,5 +179,5 @@ def annotation_time_prediction():
 
 
 if __name__ == "__main__":
-    # model_selection()
-    annotation_time_prediction()
+    model_selection()
+    # annotation_time_prediction()

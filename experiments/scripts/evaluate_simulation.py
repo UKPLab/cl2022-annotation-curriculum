@@ -115,7 +115,7 @@ def plot_new_simulation(data: List[Dict[str, Any]], output_folder: Path):
     }
 
     for ds, runs in grouped_data.items():
-        plt.figure(figsize=(7,3))
+        plt.figure(figsize=(7, 3))
 
         for run in sorted(runs, key=lambda r: regressors_to_abbr[r["regressor"]]):
             times_spearman = run["time_spearman"]
@@ -130,7 +130,10 @@ def plot_new_simulation(data: List[Dict[str, Any]], output_folder: Path):
 
             label = regressors_to_abbr[regressor]
             sns.lineplot(
-                x=t, y=times_spearman, label=label, lw=1,
+                x=t,
+                y=times_spearman,
+                label=label,
+                lw=1,
             )
         # plt.title(dataset)
         folder = output_folder

@@ -44,7 +44,7 @@ class CaTaggingAccessor:
         return t
 
     def group_by_documents_x_y(self) -> Tuple[List[List[List[str]]], List[List[List[str]]]]:
-        """ Returns a list of documents that each contain a list of sentences and
+        """Returns a list of documents that each contain a list of sentences and
         their respective labels grouped the same way.
         """
         X = []
@@ -66,7 +66,7 @@ class CaTaggingAccessor:
         return X, y
 
     def group_by_sentences_x_y(self) -> Tuple[List[List[str]], List[List[str]]]:
-        """ Returns a list of sentences and their respective labels grouped the same way. """
+        """Returns a list of sentences and their respective labels grouped the same way."""
         X = []
         y = []
 

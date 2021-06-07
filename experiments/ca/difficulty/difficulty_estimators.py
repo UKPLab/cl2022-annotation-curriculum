@@ -11,11 +11,11 @@ import torch.nn.functional as F
 from diskcache import Cache
 from mlm.models import get_pretrained
 from mlm.scorers import MLMScorer
-from pytorch_transformers import BertForMaskedLM, BertTokenizer
 from scipy.special import softmax
 from scipy.stats import entropy
 from spacy_syllables import SpacySyllables
 from torch.distributions import Categorical
+from transformers import BertForMaskedLM, BertTokenizer
 
 from ca.paths import PATH_CACHE
 
@@ -196,12 +196,12 @@ class UncertaintyDifficultyEstimator:
 
 
 class StaticDifficultyEstimator:
-    """ Difficulty estimation which is not learnt from user data.
-        Those include:
-        * Entropy-based difficulty -- done
-        * Readability-based difficulty (Flesch-Kincaid) -- done
-        * Cloze-based difficulty (BERT prediction probability) -> only relevant for specific tasks?
-        * Sentence/Document length -> put it here or somewhere else?
+    """Difficulty estimation which is not learnt from user data.
+    Those include:
+    * Entropy-based difficulty -- done
+    * Readability-based difficulty (Flesch-Kincaid) -- done
+    * Cloze-based difficulty (BERT prediction probability) -> only relevant for specific tasks?
+    * Sentence/Document length -> put it here or somewhere else?
     """
 
     def __init__(self):
