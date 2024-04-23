@@ -54,9 +54,8 @@ if __name__ == '__main__':
         (Dataset.MUC7T, ModelType.SKLEARN_CRF_TAGGER, StrategyType.ANNOTATION_TIME, RegressorType.LIGHTGBM),
     ]
 
-    experiments = experiments_spec
-    experiments = experiments_sigie
-    experiments = experiments_muc
+    # This runs experiments on all datasets
+    experiments = experiments_spec + experiments_sigie + experiments_muc7t
 
     slurmee.get_job_array_info()
 
